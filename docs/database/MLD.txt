@@ -1,0 +1,55 @@
+Catégorie = (
+    id_categorie INT,
+    description TEXT,
+    image VARCHAR(255),
+    nom VARCHAR(100),
+    created_at DATETIME,
+    updated_at DATETIME
+)
+
+Produit = (
+    id_produit INT,
+    nom VARCHAR(150),
+    prix DECIMAL(11,2),
+    image VARCHAR(255),
+    description TEXT,
+    stock INT,
+    updated_at DATETIME,
+    created_at DATETIME,
+    id_categorie INT
+)
+
+Administrateur = (
+    id_administrateur INT,
+    username VARCHAR(100),
+    email VARCHAR(150),
+    password VARCHAR(255),
+    role VARCHAR(20)
+)
+
+Commande = (
+    id_commande INT,
+    statut VARCHAR(20),
+    montant_total DECIMAL(15,2),
+    created_at DATETIME,
+    adresse_livraison VARCHAR(255)
+)
+
+Client = (
+    id_client INT,
+    nom VARCHAR(150),
+    email VARCHAR(150),
+    password VARCHAR(255),
+    adresse VARCHAR(255),
+    created_at DATETIME
+)
+
+PASSER = (
+    id_commande INT,
+    id_client INT
+)
+
+INCLURE = (
+    id_produit INT,
+    id_commande INT
+)
