@@ -9,6 +9,9 @@ class Controller
     // Méthode utilitaire pour rendre une vue avec des paramètres
     protected function render(string $view, array $params = []): void
     {
+        $baseUrl = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '')), '/');
+        $params = array_merge(['baseUrl' => $baseUrl], $params);
+
         // Extrait les paramètres en variables locales, sans écraser les existantes
         extract(array: $params);
         // Construit le chemin du fichier de vue
@@ -26,6 +29,14 @@ class Controller
 
         // Inclut le layout qui utilise la variable $content
         require $layoutFile;
+    }
+
+    protected function redirect(string $path): void
+    {
+        $baseUrl = rtrim(str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '')), '/');
+        $location = $baseUrl . $path;
+        header('Location: ' . $location);
+        exit;
     }
 }
 

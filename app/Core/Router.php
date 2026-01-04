@@ -26,18 +26,47 @@ final class Router
         // Extrait uniquement le chemin de l'URI
         $path = parse_url($uri, PHP_URL_PATH) ?? '/';
 
+        $scriptName = $_SERVER['SCRIPT_NAME'] ?? '';
+        $basePath = rtrim(str_replace('\\', '/', dirname($scriptName)), '/');
+        if ($basePath !== '' && str_starts_with($path, $basePath)) {
+            $path = substr($path, strlen($basePath));
+            if ($path === '') {
+                $path = '/';
+            }
+        }
+
         // Parcourt chaque route enregistrée
         foreach ($this->routes as [$routeMethod, $routePath, $handler]) {
-            // Vérifie correspondance stricte de méthode et de chemin
-            if ($method === $routeMethod && $path === $routePath) {
-                // Déstructure le gestionnaire en [classe, action]
+            // Vérifie correspondance de la méthode
+            if ($method !== $routeMethod) {
+                continue;
+            }
+
+            // Routes statiques
+            if (strpos($routePath, '{') === false) {
+                if ($path !== $routePath) {
+                    continue;
+                }
+
                 [$class, $action] = $handler;
-                // Instancie le contrôleur cible
                 $controller = new $class();
-                // Appelle l'action sur le contrôleur
                 $controller->$action();
                 return;
             }
+
+            // Routes dynamiques: ex /categorie/{id}
+            $pattern = preg_replace('#\{[^/]+\}#', '([^/]+)', $routePath);
+            $pattern = '#^' . $pattern . '$#';
+
+            if (!preg_match($pattern, $path, $matches)) {
+                continue;
+            }
+
+            array_shift($matches);
+            [$class, $action] = $handler;
+            $controller = new $class();
+            $controller->$action(...$matches);
+            return;
         }
 
         // Si aucune route ne correspond, renvoie un 404 minimaliste

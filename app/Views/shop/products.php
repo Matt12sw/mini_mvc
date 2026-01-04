@@ -1,19 +1,8 @@
-<!-- Paragraphe d'accueil affiché sur la page d'accueil -->
-<p>Bienvenue sur le mini MVC. Tout fonctionne ✅</p>
-
-
-<h1>Mon prénom est <?= $prenom ?></h1>
-
-<h2>Le titre est <?= $title ?></h2>
-
-<h2>Le 2eme prénom est <?= $prenom2 ?></h2>
-
-
 <p>
-    <a href="<?= htmlspecialchars((string) $baseUrl) ?>/catalogue">Voir le catalogue</a>
+    <a href="<?= htmlspecialchars((string) $baseUrl) ?>/catalogue">Retour aux catégories</a>
 </p>
 
-<h2>Produits</h2>
+<h2>Produits - <?= htmlspecialchars((string) ($category['nom'] ?? '')) ?></h2>
 
 <?php if (!empty($products)) : ?>
     <div class="grid">
@@ -34,7 +23,5 @@
         <?php endforeach; ?>
     </div>
 <?php else : ?>
-    <p>Aucun produit trouvé.</p>
+    <p>Aucun produit dans cette catégorie.</p>
 <?php endif; ?>
-
-
